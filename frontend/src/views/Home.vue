@@ -1,8 +1,7 @@
 <template>
 
 <div class="home-page">
-    
-  <title-bar />
+
 
   <!-- 轮播图 Hero -->
   <section v-if="carouselItems && carouselItems.length" class="hero">
@@ -21,7 +20,7 @@
           :style="{ backgroundImage: `url(${item.image})` }"
           >
           <div class="hero-content">
-              <h1 class="hero-title">{{ item.title }}</h1>
+              <span class="hero-title">{{ item.title }}</span>
               <p class="hero-sub">{{ item.subtitle }}</p>
               <router-link :to="item.link">
               <button class="hero-btn">
@@ -52,7 +51,6 @@
 </template>
 
 <script setup lang="ts">
-import TitleBar from '@/components/TitleBar.vue'
 
 // 轮播数据
 interface CarouselItem {

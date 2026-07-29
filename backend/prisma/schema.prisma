@@ -1,7 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Prisma v7 Schema — HongDuCC
+// Database: PostgreSQL
 
 generator client {
   provider = "prisma-client"
@@ -9,5 +7,336 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
+}
+
+// ============================================================
+// Users
+// ============================================================
+model User {
+  id            Int       @id @default(autoincrement())
+  studentId     String    @unique @map("student_id")
+  passwordHash  String    @map("password_hash")
+  nickname      String
+  avatarUrl     String    @default("") @map("avatar_url")
+  bio           String    @default("")
+  tags          Json      @default("[]")
+  role          String    @default("user")
+  status        String    @default("active")
+  credits       Int       @default(0)
+  email         String?   @unique
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  resources        Resource[]
+  forumPosts       ForumPost[]
+  comments         Comment[]
+  feeds            Feed[]
+  clubMemberships  ClubMember[]
+  notifications    Notification[]
+  resourceLikes    ResourceLike[]
+  forumLikes       ForumLike[]
+  feedLikes        FeedLike[]
+  sentFollows      Follow[]       @relation("Follower")
+  receivedFollows  Follow[]       @relation("Followed")
+  ledClubs         Club[]         @relation("ClubLeader")
+  createdEvents    ClubEvent[]
+  reportsMade      Report[]       @relation("ReportReporter")
+  reportsHandled   Report[]       @relation("ReportHandler")
+
+  @@index([role, status])
+  @@map("users")
+}
+
+// ============================================================
+// Notifications
+// ============================================================
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  type      String
+  title     String
+  body      String    @default("")
+  link      String    @default("")
+  isRead    Boolean   @default(false) @map("is_read")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ============================================================
+// Resources
+// ============================================================
+model Resource {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String   @default("")
+  category      String
+  subject       String   @default("")
+  grade         String   @default("")
+  fileName      String   @map("file_name")
+  filePath      String   @map("file_path")
+  fileSize      Int      @default(0) @map("file_size")
+  fileType      String   @default("") @map("file_type")
+  downloadCount Int      @default(0) @map("download_count")
+  likeCount     Int      @default(0) @map("like_count")
+  authorId      Int      @map("author_id")
+  status        String   @default("published")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  author User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  ResourceLike[]
+
+  @@index([category, subject])
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("resources")
+}
+
+model ResourceLike {
+  id         Int      @id @default(autoincrement())
+  resourceId Int      @map("resource_id")
+  userId     Int      @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([resourceId, userId])
+  @@map("resource_likes")
+}
+
+// ============================================================
+// News
+// ============================================================
+model News {
+  id        Int       @id @default(autoincrement())
+  title     String
+  summary   String    @default("")
+  content   String    @default("")
+  coverUrl  String    @default("") @map("cover_url")
+  category  String    @default("校园动态")
+  authorId  Int?      @map("author_id")
+  viewCount Int       @default(0) @map("view_count")
+  isPinned  Boolean   @default(false) @map("is_pinned")
+  status    String    @default("published")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("news")
+}
+
+// ============================================================
+// Forum
+// ============================================================
+model ForumPost {
+  id            Int       @id @default(autoincrement())
+  title         String
+  content       String
+  category      String    @default("综合讨论")
+  topicName     String    @default("") @map("topic_name")
+  authorId      Int       @map("author_id")
+  viewCount     Int       @default(0) @map("view_count")
+  likeCount     Int       @default(0) @map("like_count")
+  commentCount  Int       @default(0) @map("comment_count")
+  isPinned      Boolean   @default(false) @map("is_pinned")
+  isHighlighted Boolean   @default(false) @map("is_highlighted")
+  status        String    @default("published")
+  deletedAt     DateTime? @map("deleted_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  author User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  ForumLike[]
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("forum_posts")
+}
+
+model ForumLike {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("forum_likes")
+}
+
+// ============================================================
+// Comments
+// ============================================================
+model Comment {
+  id         Int       @id @default(autoincrement())
+  targetType String    @map("target_type")
+  targetId   Int       @map("target_id")
+  parentId   Int?      @map("parent_id")
+  content    String
+  authorId   Int       @map("author_id")
+  likeCount  Int       @default(0) @map("like_count")
+  deletedAt  DateTime? @map("deleted_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  author  User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
+
+  @@index([targetType, targetId])
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("comments")
+}
+
+// ============================================================
+// Feeds
+// ============================================================
+model Feed {
+  id           Int       @id @default(autoincrement())
+  authorId     Int       @map("author_id")
+  content      String
+  images       Json      @default("[]")
+  likeCount    Int       @default(0) @map("like_count")
+  commentCount Int       @default(0) @map("comment_count")
+  status       String    @default("published")
+  deletedAt    DateTime? @map("deleted_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  author User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  FeedLike[]
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("feeds")
+}
+
+model FeedLike {
+  id        Int      @id @default(autoincrement())
+  feedId    Int      @map("feed_id")
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  feed Feed @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([feedId, userId])
+  @@map("feed_likes")
+}
+
+// ============================================================
+// Follows
+// ============================================================
+model Follow {
+  id         Int      @id @default(autoincrement())
+  followerId Int      @map("follower_id")
+  followedId Int      @map("followed_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  follower User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followed User @relation("Followed", fields: [followedId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followedId])
+  @@map("follows")
+}
+
+// ============================================================
+// Clubs
+// ============================================================
+model Club {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String    @default("")
+  coverUrl    String    @default("") @map("cover_url")
+  category    String
+  leaderId    Int?      @map("leader_id")
+  advisor     String    @default("")
+  established String    @default("")
+  meetingTime String    @default("") @map("meeting_time")
+  location    String    @default("")
+  memberCount Int       @default(0) @map("member_count")
+  maxMembers  Int       @default(50) @map("max_members")
+  status      String    @default("active")
+  deletedAt   DateTime? @map("deleted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  leader      User?        @relation("ClubLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  memberships ClubMember[]
+  events      ClubEvent[]
+
+  @@index([category])
+  @@index([leaderId])
+  @@index([createdAt])
+  @@map("clubs")
+}
+
+model ClubMember {
+  id       Int      @id @default(autoincrement())
+  clubId   Int      @map("club_id")
+  userId   Int      @map("user_id")
+  role     String   @default("member")
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([clubId, userId])
+  @@index([clubId, role])
+  @@map("club_members")
+}
+
+model ClubEvent {
+  id          Int       @id @default(autoincrement())
+  clubId      Int       @map("club_id")
+  title       String
+  description String    @default("")
+  startTime   DateTime  @map("start_time")
+  endTime     DateTime? @map("end_time")
+  location    String    @default("")
+  status      String    @default("upcoming")
+  createdBy   Int?      @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  club    Club  @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  creator User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([clubId, startTime])
+  @@map("club_events")
+}
+
+// ============================================================
+// Reports
+// ============================================================
+model Report {
+  id         Int       @id @default(autoincrement())
+  reporterId Int       @map("reporter_id")
+  targetType String    @map("target_type")
+  targetId   Int       @map("target_id")
+  reason     String
+  detail     String    @default("")
+  status     String    @default("pending")
+  handlerId  Int?      @map("handler_id")
+  handledAt  DateTime? @map("handled_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  reporter User  @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  handler  User? @relation("ReportHandler", fields: [handlerId], references: [id], onDelete: SetNull)
+
+  @@index([targetType, targetId])
+  @@index([status])
+  @@index([reporterId])
+  @@map("reports")
 }
