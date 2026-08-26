@@ -6,7 +6,7 @@ import { CreateCommentDto } from './dto/comment.dto.js'
 export class CommentsService {
   constructor(private prisma: PrismaService) {}
 
-  /** Get comments for any target (resource, forum_post, feed) */
+  /** Get comments for any target (resource, feed) */
   async listByTarget(targetType: string, targetId: number) {
     const comments = await this.prisma.comment.findMany({
       where: { targetType, targetId, parentId: null, deletedAt: null },
@@ -36,12 +36,7 @@ export class CommentsService {
     })
 
     // Update comment count on the target
-    if (dto.targetType === 'forum_post') {
-      await this.prisma.forumPost.update({
-        where: { id: dto.targetId },
-        data: { commentCount: { increment: 1 } },
-      })
-    } else if (dto.targetType === 'feed') {
+    if (dto.targetType === 'feed') {
       await this.prisma.feed.update({
         where: { id: dto.targetId },
         data: { commentCount: { increment: 1 } },

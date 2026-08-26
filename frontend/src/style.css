@@ -15,6 +15,7 @@
   --color-success:       #52c41a;
   --color-warning:       #faad14;
   --color-danger:        #ff4d4f;
+  --color-green:         #059669;
 
   /* Surfaces */
   --bg-page:         #f5f6f8;
@@ -44,11 +45,23 @@
   --nav-text-hover: #fff;
 
   /* Sizing */
+  --radius-xs:  4px;
   --radius-sm:  6px;
   --radius-md:  10px;
   --radius-lg:  16px;
+  --radius-full: 9999px;
   --header-h:   64px;
   --max-width:  1200px;
+
+  /* Motion */
+  --ease-smooth:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:  150ms;
+  --duration-base:  250ms;
+  --duration-slow:  400ms;
+  --transition-fast:  var(--duration-fast) var(--ease-smooth);
+  --transition-base:  var(--duration-base) var(--ease-smooth);
+  --transition-slow:  var(--duration-slow) var(--ease-out-expo);
 
   /* Typography */
   --font-sans:   'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
@@ -62,22 +75,22 @@
   --color-primary:       #4a90d9;
   --color-primary-light: #5da0e8;
   --color-primary-dark:  #2a6099;
-  --color-accent:        #4a90d9;
-  --color-accent-hover:  #6aaff0;
+  --color-accent:        #7c3aed;
+  --color-accent-hover:  #9a5cff;
 
-  --bg-page:         #0f1117;
-  --bg-card:         #1a1c24;
-  --bg-card-hover:   #22242e;
+  --bg-page:         #0c1122;
+  --bg-card:         #101828;
+  --bg-card-hover:   #161f33;
   --bg-overlay:      rgba(255,255,255,0.02);
-  --bg-input:        #1e2030;
+  --bg-input:        #101828;
 
   --text-primary:    #e8e8ed;
   --text-secondary:  #9ca3af;
   --text-muted:      #6b7280;
   --text-inverse:    #ffffff;
 
-  --border-light:    #2a2c38;
-  --border-normal:   #363848;
+  --border-light:    #232c3d;
+  --border-normal:   #2a3648;
 
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.3);
   --shadow-md:  0 4px 16px rgba(0,0,0,0.4);
@@ -181,6 +194,12 @@ img { max-width: 100%; height: auto; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* ---- Page transition ---- */
+/* 页面切换平滑过渡（淡入淡出） */
+.fade-enter-active { transition: opacity 0.3s ease; }
+.fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }
+
 /* Page transitions */
 .slide-up-enter-active { transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
 .slide-up-leave-active { transition: all 0.2s ease-in; }

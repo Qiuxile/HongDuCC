@@ -11,15 +11,14 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } })
     if (!user) throw new NotFoundException('用户不存在')
 
-    const [followingCount, followersCount, postsCount, resourcesCount] = await Promise.all([
+    const [followingCount, followersCount, resourcesCount] = await Promise.all([
       this.prisma.follow.count({ where: { followerId: userId } }),
       this.prisma.follow.count({ where: { followedId: userId } }),
-      this.prisma.forumPost.count({ where: { authorId: userId, status: 'published' } }),
       this.prisma.resource.count({ where: { authorId: userId, status: 'published' } }),
     ])
 
     const { passwordHash, ...profile } = user
-    return { ...profile, followingCount, followersCount, postsCount, resourcesCount }
+    return { ...profile, followingCount, followersCount, resourcesCount }
   }
 
   /** Update current user's own profile */

@@ -4,7 +4,7 @@
       <div id="app">
         <title-bar />
         <router-view v-slot="{ Component }">
-          <transition name="slide-up" mode="out-in">
+          <transition name="fade" mode="out-in">
             <component :is="Component" />
           </transition>
         </router-view>
@@ -14,25 +14,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { NMessageProvider, NConfigProvider } from 'naive-ui'
 import { useTheme } from '@/composables/useTheme'
 import TitleBar from '@/components/TitleBar.vue'
 
-const { theme } = useTheme()
-
-const isDark = computed(() => theme.value === 'dark')
-
-const themeOverrides = computed(() => ({
-  common: {
-    primaryColor: isDark.value ? '#4a90d9' : '#1e3a5f',
-    primaryColorHover: isDark.value ? '#5da0e8' : '#2d5a8e',
-    bodyColor: isDark.value ? '#0f1117' : '#f5f6f8',
-    cardColor: isDark.value ? '#1a1c24' : '#ffffff',
-    textColor1: isDark.value ? '#e8e8ed' : '#1a1a2e',
-    textColor2: isDark.value ? '#9ca3af' : '#666',
-    borderColor: isDark.value ? '#2a2c38' : '#eee',
-    inputColor: isDark.value ? '#1e2030' : '#f5f6f8',
-  },
-}))
+const { themeOverrides } = useTheme()
 </script>
+
+<style scoped>
+/* 页面切换过渡间隙露出主题深色底，避免闪烁浅色 */
+#app {
+  min-height: 100vh;
+  background: var(--theme-bg-page, #05070d);
+}
+</style>

@@ -6,17 +6,16 @@ export class AdminService {
   constructor(private prisma: PrismaService) {}
 
   async dashboard() {
-    const [userCount, newsCount, resourceCount, postCount, feedCount, clubCount, pendingReports] =
+    const [userCount, newsCount, resourceCount, feedCount, clubCount, pendingReports] =
       await Promise.all([
         this.prisma.user.count(),
         this.prisma.news.count({ where: { status: 'published' } }),
         this.prisma.resource.count({ where: { status: 'published' } }),
-        this.prisma.forumPost.count({ where: { status: 'published' } }),
         this.prisma.feed.count({ where: { status: 'published' } }),
         this.prisma.club.count({ where: { status: 'active' } }),
         this.prisma.report.count({ where: { status: 'pending' } }),
       ])
-    return { userCount, newsCount, resourceCount, postCount, feedCount, clubCount, pendingReports }
+    return { userCount, newsCount, resourceCount, feedCount, clubCount, pendingReports }
   }
 
   async listUsers(page = 1, pageSize = 20, search?: string) {

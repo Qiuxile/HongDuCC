@@ -23,9 +23,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { NButton, NAvatar } from 'naive-ui'
 import { getMe } from '@/api/auth'
+import { useAuthStore } from '@/stores/auth'
 
 const router=useRouter();const user=ref<any>(null)
-const isAuth=computed(()=>!!localStorage.getItem('token'))
+const authStore = useAuthStore()
+const isAuth = computed(() => authStore.isAuthenticated)
 onMounted(async()=>{if(isAuth.value)try{user.value=await getMe()}catch{}})
-function logout(){localStorage.removeItem('token');localStorage.removeItem('user');router.push('/')}
+function logout(){authStore.logout();router.push('/')}
 </script>

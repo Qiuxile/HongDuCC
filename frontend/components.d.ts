@@ -11,9 +11,15 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AuroraBg: typeof import('./src/components/AuroraBg.vue')['default']
+    ColorBends: typeof import('./src/components/ColorBends.vue')['default']
+    GradualBlur: typeof import('./src/components/GradualBlur.vue')['default']
     NCarousel: typeof import('naive-ui')['NCarousel']
+    NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SideRays: typeof import('./src/components/SideRays.vue')['default']
+    StarBorder: typeof import('./src/components/StarBorder.vue')['default']
     TitleBar: typeof import('./src/components/TitleBar.vue')['default']
   }
 }

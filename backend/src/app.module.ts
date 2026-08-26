@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module.js'
 import { UsersModule } from './users/users.module.js'
 import { NewsModule } from './news/news.module.js'
 import { ResourcesModule } from './resources/resources.module.js'
-import { ForumModule } from './forum/forum.module.js'
 import { CommentsModule } from './comments/comments.module.js'
 import { FeedsModule } from './feeds/feeds.module.js'
 import { SocialModule } from './social/social.module.js'
@@ -28,7 +27,6 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor.
     UsersModule,
     NewsModule,
     ResourcesModule,
-    ForumModule,
     CommentsModule,
     FeedsModule,
     SocialModule,

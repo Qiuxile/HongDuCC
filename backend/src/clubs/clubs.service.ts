@@ -95,6 +95,17 @@ export class ClubsService {
 
   // ---------- Events ----------
 
+  /** Recent events across all clubs (for sidebar widgets) */
+  async listRecentEvents(limit?: number) {
+    const take = Math.min(Math.max(limit ?? 5, 1), 20)
+    return this.prisma.clubEvent.findMany({
+      where: { status: { not: 'cancelled' } },
+      orderBy: { startTime: 'desc' },
+      take,
+      include: { club: { select: { id: true, name: true } } },
+    })
+  }
+
   async listEvents(clubId: number) {
     return this.prisma.clubEvent.findMany({
       where: { clubId },

@@ -1,11 +1,12 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { themes, applyThemeTokens, naiveOverrides, type ThemeId } from '@/theme'
 
-type Theme = 'light' | 'dark'
+const theme = ref<ThemeId>((localStorage.getItem('theme') as ThemeId) || 'dark')
 
-const theme = ref<Theme>((localStorage.getItem('theme') as Theme) || 'light')
-
-function applyTheme(t: Theme) {
+function applyTheme(t: ThemeId) {
+  const target = themes[t] ?? themes.dark
   document.documentElement.setAttribute('data-theme', t)
+  applyThemeTokens(target)
   localStorage.setItem('theme', t)
   theme.value = t
 }
@@ -18,5 +19,9 @@ function toggleTheme() {
 applyTheme(theme.value)
 
 export function useTheme() {
-  return { theme, toggleTheme, applyTheme }
+  /** naive-ui 组件主题覆盖（跟随当前主题 token） */
+  const themeOverrides = computed(() => naiveOverrides(themes[theme.value] ?? themes.dark))
+  /** 当前主题 token */
+  const themeTokens = computed(() => themes[theme.value] ?? themes.dark)
+  return { theme, themeTokens, themeOverrides, toggleTheme, applyTheme }
 }

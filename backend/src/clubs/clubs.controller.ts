@@ -10,6 +10,12 @@ export class ClubsController {
   constructor(private clubsService: ClubsService) {}
 
   @Public()
+  @Get('events/recent')
+  recentEvents(@Query('limit') limit?: number) {
+    return this.clubsService.listRecentEvents(limit)
+  }
+
+  @Public()
   @Get()
   list(@Query('page') page?: number, @Query('pageSize') pageSize?: number, @Query('category') category?: string) {
     return this.clubsService.list(page, pageSize, category)

@@ -10,12 +10,14 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/auth/Login.vue'),
+    component: () => import('@/views/auth/Auth.vue'),
+    props: { mode: 'login' },
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('@/views/auth/Register.vue'),
+    component: () => import('@/views/auth/Auth.vue'),
+    props: { mode: 'register' },
   },
   {
     path: '/news',
@@ -26,16 +28,6 @@ const routes: RouteRecordRaw[] = [
     path: '/news/:id',
     name: 'NewsDetail',
     component: () => import('@/views/NewsDetail.vue'),
-  },
-  {
-    path: '/forum',
-    name: 'Forum',
-    component: () => import('@/views/Forum.vue'),
-  },
-  {
-    path: '/forum/:id',
-    name: 'ForumDetail',
-    component: () => import('@/views/ForumDetail.vue'),
   },
   {
     path: '/resources',

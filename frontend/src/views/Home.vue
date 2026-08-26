@@ -83,13 +83,6 @@ const carouselItems: CarouselItem[] = [
     link: '/clubs',
     buttonText: '查看社团',
   },
-  {
-    image: '/carousels/image3.png',
-    title: '校园论坛开放中',
-    subtitle: '分享你的故事，发现身边精彩',
-    link: '/forum',
-    buttonText: '进入论坛',
-  },
 ]
 
 </script>
@@ -345,14 +338,9 @@ const carouselItems: CarouselItem[] = [
   .clubs-grid {
     grid-template-columns: 1fr;
   }
-  .forum-thumb {
-    width: 70px;
-    height: 50px;
-  }
 
   .news-section,
   .resources-section,
-  .forum-section,
   .clubs-section {
     padding: 60px 0;
   }
@@ -372,9 +360,6 @@ const carouselItems: CarouselItem[] = [
   .stats-row {
     gap: 20px;
     flex-wrap: wrap;
-  }
-  .forums-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>

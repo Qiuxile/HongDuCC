@@ -23,7 +23,7 @@ const stats=ref<any>(null)
 const isAdmin=computed(()=>JSON.parse(localStorage.getItem('user')||'{}').role==='admin')
 const cards=computed(()=>[
   {label:'用户',value:stats.value?.userCount??'-'},{label:'新闻',value:stats.value?.newsCount??'-'},
-  {label:'资源',value:stats.value?.resourceCount??'-'},{label:'帖子',value:stats.value?.postCount??'-'},
+  {label:'资源',value:stats.value?.resourceCount??'-'},
   {label:'动态',value:stats.value?.feedCount??'-'},{label:'社团',value:stats.value?.clubCount??'-'},
   {label:'待处理举报',value:stats.value?.pendingReports??'-'},
 ])
